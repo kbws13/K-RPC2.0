@@ -2,6 +2,7 @@ package xyz.kbws.consumer;
 
 import xyz.kbws.common.model.User;
 import xyz.kbws.common.service.UserService;
+import xyz.kbws.rpc.proxy.ServiceProxyFactory;
 
 /**
  * @author kbws
@@ -10,8 +11,9 @@ import xyz.kbws.common.service.UserService;
  */
 public class SimpleConsumerExample {
     public static void main(String[] args) {
-        // todo 需要获取 UserService 的实现类对象
-        UserService userService = null;
+        // 静态代理
+        //UserService userService = new UserServiceProxy();
+        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
         User user = new User();
         user.setName("kbws");
         // 调用
