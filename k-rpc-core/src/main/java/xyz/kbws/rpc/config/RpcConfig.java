@@ -1,6 +1,7 @@
 package xyz.kbws.rpc.config;
 
 import lombok.Data;
+import xyz.kbws.rpc.serializer.SerializerKeys;
 
 /**
  * @author kbws
@@ -33,4 +34,9 @@ public class RpcConfig {
      * 模拟调用
      */
     private boolean mock = false;
+
+    /**
+     * 序列化器
+     */
+    private String serializer = SerializerKeys.JDK;
 }
