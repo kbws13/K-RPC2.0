@@ -13,7 +13,7 @@ public class SimpleConsumerExample {
     public static void main(String[] args) {
         // 静态代理
         //UserService userService = new UserServiceProxy();
-        UserService userService = ServiceProxyFactory.getMockProxy(UserService.class);
+        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
         User user = new User();
         user.setName("kbws");
         // 调用
@@ -23,7 +23,7 @@ public class SimpleConsumerExample {
         }else {
             System.out.println("user==null");
         }
-        short number = userService.getNumber();
-        System.out.println(number);
+        //short number = userService.getNumber();
+        //System.out.println(number);
     }
 }
