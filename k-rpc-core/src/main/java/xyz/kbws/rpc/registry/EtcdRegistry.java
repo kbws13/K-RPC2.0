@@ -1,12 +1,14 @@
 package xyz.kbws.rpc.registry;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
 import cn.hutool.json.JSONUtil;
 import io.etcd.jetcd.*;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
+import io.etcd.jetcd.watch.WatchEvent;
 import xyz.kbws.rpc.config.RegistryConfig;
 import xyz.kbws.rpc.model.ServiceMetaInfo;
 
@@ -37,6 +39,11 @@ public class EtcdRegistry implements Registry{
      * 注册中心服务缓存
      */
     private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+
+    /**
+     * 正在监听的 key 集合
+     */
+    private final Set<String> watchingKeySet = new ConcurrentHashSet<>();
 
     /**
      * 根节点
@@ -100,6 +107,9 @@ public class EtcdRegistry implements Registry{
             // 解析服务信息
             List<ServiceMetaInfo> serviceMetaInfoList = keyValues.stream()
                     .map(keyValue -> {
+                        String key = keyValue.getKey().toString(StandardCharsets.UTF_8);
+                        // 监听 key 的变化
+                        watch(key);
                         String value = keyValue.getValue().toString(StandardCharsets.UTF_8);
                         return JSONUtil.toBean(value, ServiceMetaInfo.class);
                     })
@@ -164,5 +174,32 @@ public class EtcdRegistry implements Registry{
         // 支持秒级别定时任务
         CronUtil.setMatchSecond(true);
         CronUtil.start();
+    }
+
+    /**
+     * 监听（服务端）
+     * @param serviceNodeKey
+     */
+    @Override
+    public void watch(String serviceNodeKey) {
+        Watch watchClient = client.getWatchClient();
+        // 之前未被监听，开启监听
+        boolean newWatch = watchingKeySet.add(serviceNodeKey);
+        if (newWatch) {
+            watchClient.watch(ByteSequence.from(serviceNodeKey, StandardCharsets.UTF_8), response -> {
+                for (WatchEvent watchEvent : response.getEvents()) {
+                    switch (watchEvent.getEventType()) {
+                        // key 删除时触发
+                        case DELETE:
+                            // 清理注册服务缓存
+                            registryServiceCache.clearCache();
+                            break;
+                        case PUT:
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
     }
 }

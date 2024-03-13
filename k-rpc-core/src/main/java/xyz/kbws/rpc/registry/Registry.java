@@ -47,4 +47,9 @@ public interface Registry {
      * 心跳机制
      */
     void heartBeat();
+
+    /**
+     * 监听（服务端）
+     */
+    void watch(String serviceNodeKey);
 }
