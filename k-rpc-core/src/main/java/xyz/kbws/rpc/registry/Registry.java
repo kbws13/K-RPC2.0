@@ -42,4 +42,9 @@ public interface Registry {
      * 服务销毁
      */
     void destroy();
+
+    /**
+     * 心跳机制
+     */
+    void heartBeat();
 }
