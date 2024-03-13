@@ -1,10 +1,15 @@
 package xyz.kbws.rpc.model;
 
+import cn.hutool.core.util.StrUtil;
+import lombok.Data;
+import xyz.kbws.rpc.constants.RpcConstants;
+
 /**
  * @author kbws
  * @date 2024/3/13
  * @description: 服务元信息（注册信息）
  */
+@Data
 public class ServiceMetaInfo {
     /**
      * 服务名称
@@ -14,12 +19,17 @@ public class ServiceMetaInfo {
     /**
      * 服务版本号
      */
-    private String serviceVersion = "1.0";
+    private String serviceVersion = RpcConstants.DEFAULT_SERVICE_VERSION;
 
     /**
-     * 服务地址
+     * 服务域名
      */
-    private String serviceAddress;
+    private String serviceHost;
+
+    /**
+     * 服务端口号
+     */
+    private Integer servicePort;
 
     /**
      * 服务分组（暂未实现）
@@ -32,14 +42,24 @@ public class ServiceMetaInfo {
     public String getServiceKey() {
         // 后续可拓展分组
         //return String.format("$s:$s:$s", serviceName, serviceVersion, serviceGroup);
-        return String.format("$s:$s", serviceName, serviceVersion);
+        return String.format("%s:%s", serviceName, serviceVersion);
     }
 
     /**
      * 获取服务节点键名
      */
     public String getServiceNodeKey() {
-        return String.format("$s/$s", getServiceKey(), serviceAddress);
+        return String.format("%s/%s:%s", getServiceKey(), serviceHost, servicePort);
+    }
+
+    /**
+     * 获取完整服务地址
+     */
+    public String getServiceAddress() {
+        if (!StrUtil.contains(serviceHost, "http")) {
+            return String.format("http://%s:%s", serviceHost, servicePort);
+        }
+        return String.format("%s:%s", serviceHost, servicePort);
     }
 
 }

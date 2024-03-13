@@ -1,8 +1,11 @@
 package xyz.kbws.rpc;
 
 import lombok.extern.slf4j.Slf4j;
+import xyz.kbws.rpc.config.RegistryConfig;
 import xyz.kbws.rpc.config.RpcConfig;
 import xyz.kbws.rpc.constants.RpcConstants;
+import xyz.kbws.rpc.registry.Registry;
+import xyz.kbws.rpc.registry.RegistryFactory;
 import xyz.kbws.rpc.utils.ConfigUtils;
 
 /**
@@ -21,6 +24,10 @@ public class RpcApplication {
     public static void init(RpcConfig newRpcConfig) {
         rpcConfig = newRpcConfig;
         log.info("rpc init, config={}",newRpcConfig.toString());
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
+        log.info("registry init, config={}", registryConfig);
     }
 
     /**
