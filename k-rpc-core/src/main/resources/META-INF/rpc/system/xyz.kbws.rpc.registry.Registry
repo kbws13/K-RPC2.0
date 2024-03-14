@@ -1,2 +1,2 @@
 etcd=xyz.kbws.rpc.registry.EtcdRegistry
-zookeeper=xyz.kbws.roc.registry.ZooKeeperRegistry
+zookeeper=xyz.kbws.rpc.registry.ZooKeeperRegistry
