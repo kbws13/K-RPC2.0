@@ -9,6 +9,7 @@ import io.etcd.jetcd.*;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
 import io.etcd.jetcd.watch.WatchEvent;
+import lombok.extern.slf4j.Slf4j;
 import xyz.kbws.rpc.config.RegistryConfig;
 import xyz.kbws.rpc.model.ServiceMetaInfo;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  * @date 2024/3/13
  * @description: Etcd 作为注册中心
  */
+@Slf4j
 public class EtcdRegistry implements Registry{
 
     private Client client;

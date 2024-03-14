@@ -10,6 +10,7 @@ import xyz.kbws.rpc.registry.Registry;
 import xyz.kbws.rpc.registry.RegistryFactory;
 import xyz.kbws.rpc.server.HttpServer;
 import xyz.kbws.rpc.server.VertxHttpServer;
+import xyz.kbws.rpc.server.tcp.VertxTcpServer;
 
 /**
  * @author kbws
@@ -40,7 +41,10 @@ public class ProviderExample {
         }
 
         // 启动 web 服务
-        HttpServer httpServer = new VertxHttpServer();
-        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+        //HttpServer httpServer = new VertxHttpServer();
+        //httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+        // 启动 TCP 服务
+        VertxTcpServer vertxTcpServer = new VertxTcpServer();
+        vertxTcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
     }
 }
