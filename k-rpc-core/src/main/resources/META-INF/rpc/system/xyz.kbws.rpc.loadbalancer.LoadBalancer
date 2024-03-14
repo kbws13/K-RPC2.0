@@ -1,0 +1,3 @@
+roundRobin=xyz.kbws.rpc.loadbalancer.RoundRobinLoadBalancer
+random=xyz.kbws.rpc.loadbalancer.RandomLoadBalancer
+consistentHash=xyz.kbws.rpc.loadbalancer.ConsistentHashLoadBalancer
