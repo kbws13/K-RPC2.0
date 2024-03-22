@@ -13,6 +13,8 @@ import org.checkerframework.checker.index.qual.SameLen;
 import xyz.kbws.rpc.RpcApplication;
 import xyz.kbws.rpc.config.RpcConfig;
 import xyz.kbws.rpc.constants.RpcConstants;
+import xyz.kbws.rpc.fault.retry.RetryStrategy;
+import xyz.kbws.rpc.fault.retry.RetryStrategyFactory;
 import xyz.kbws.rpc.loadbalancer.LoadBalancer;
 import xyz.kbws.rpc.loadbalancer.LoadBalancerFactory;
 import xyz.kbws.rpc.model.RpcRequest;
@@ -79,7 +81,11 @@ public class ServiceProxy implements InvocationHandler {
             //    return rpcResponse.getData();
             //}
             // 发送 TCP 请求
-            RpcResponse response = VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo);
+            // 使用重试机制
+            RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+            RpcResponse response = retryStrategy.doRetry(() ->
+                VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
+            );
             return response.getData();
         } catch (Exception e) {
             log.info("ServiceProxy中抛出了异常:{}", e.getMessage());
