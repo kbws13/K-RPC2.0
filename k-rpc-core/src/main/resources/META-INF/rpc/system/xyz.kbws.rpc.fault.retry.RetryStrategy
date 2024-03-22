@@ -1,0 +1,2 @@
+no=xyz.kbws.rpc.fault.retry.NoRetryStrategy
+fixedInterval=xyz.kbws.rpc.fault.retry.FixedIntervalRetryStrategy

@@ -2,6 +2,7 @@ package xyz.kbws.rpc.spi;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import lombok.extern.slf4j.Slf4j;
+import xyz.kbws.rpc.fault.retry.RetryStrategy;
 import xyz.kbws.rpc.loadbalancer.LoadBalancer;
 import xyz.kbws.rpc.registry.Registry;
 import xyz.kbws.rpc.serializer.Serializer;
@@ -51,7 +52,7 @@ public class SpiLoader {
     /**
      * 动态加载的类列表
      */
-    private static final List<Class<?>> LOAD_CLASS_LIST = Arrays.asList(Serializer.class, Registry.class, LoadBalancer.class);
+    private static final List<Class<?>> LOAD_CLASS_LIST = Arrays.asList(Serializer.class, Registry.class, LoadBalancer.class, RetryStrategy.class);
 
     /**
      * 加载所有类型
