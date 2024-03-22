@@ -15,6 +15,8 @@ import xyz.kbws.rpc.config.RpcConfig;
 import xyz.kbws.rpc.constants.RpcConstants;
 import xyz.kbws.rpc.fault.retry.RetryStrategy;
 import xyz.kbws.rpc.fault.retry.RetryStrategyFactory;
+import xyz.kbws.rpc.fault.tolerant.TolerantStrategy;
+import xyz.kbws.rpc.fault.tolerant.TolerantStrategyFactory;
 import xyz.kbws.rpc.loadbalancer.LoadBalancer;
 import xyz.kbws.rpc.loadbalancer.LoadBalancerFactory;
 import xyz.kbws.rpc.model.RpcRequest;
@@ -82,10 +84,17 @@ public class ServiceProxy implements InvocationHandler {
             //}
             // 发送 TCP 请求
             // 使用重试机制
-            RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
-            RpcResponse response = retryStrategy.doRetry(() ->
-                VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
-            );
+            RpcResponse response;
+            try {
+                RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+                response = retryStrategy.doRetry(() ->
+                        VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
+                );
+            } catch (Exception e) {
+                // 容错机制
+                TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getTolerantStrategy());
+                response = tolerantStrategy.doTolerant(null, e);
+            }
             return response.getData();
         } catch (Exception e) {
             log.info("ServiceProxy中抛出了异常:{}", e.getMessage());

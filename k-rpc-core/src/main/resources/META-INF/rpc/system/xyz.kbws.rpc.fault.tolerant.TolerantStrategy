@@ -1,0 +1,4 @@
+failBack=xyz.kbws.rpc.fault.tolerant.FailBackTolerantStrategy
+failFast=xyz.kbws.rpc.fault.tolerant.FailFastTolerantStrategy
+failOver=xyz.kbws.rpc.fault.tolerant.FailOverTolerantStrategy
+failSafe=xyz.kbws.rpc.fault.tolerant.FailSafeTolerantStrategy

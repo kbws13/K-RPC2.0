@@ -2,6 +2,7 @@ package xyz.kbws.rpc.config;
 
 import lombok.Data;
 import xyz.kbws.rpc.fault.retry.RetryStrategyKeys;
+import xyz.kbws.rpc.fault.tolerant.TolerantStrategyKeys;
 import xyz.kbws.rpc.loadbalancer.LoadBalancerKeys;
 import xyz.kbws.rpc.serializer.SerializerKeys;
 
@@ -56,4 +57,9 @@ public class RpcConfig {
      * 重试策略
      */
     private String retryStrategy = RetryStrategyKeys.NO;
+
+    /**
+     * 容错策略
+     */
+    private String tolerantStrategy = TolerantStrategyKeys.FAIL_FAST;
 }
